@@ -10,5 +10,5 @@ public interface CarService {
 
     List<Car> getAllCar();
 
-    List<Car> capacityCar(int count);
+    List<Car> capacityCar(Integer count);
 }

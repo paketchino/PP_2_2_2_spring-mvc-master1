@@ -1,45 +1,42 @@
 package web.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import web.dao.CarDaoRepository;
 import web.model.Car;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @Service
 public class CarServiceImpl implements CarService {
 
-    private List<Car> storageCar = new ArrayList<>();
+    private final CarDaoRepository carDaoRepository;
 
-    public CarServiceImpl() {
-        storageCar.add(new Car("reno", "machina", "dadad"));
-        storageCar.add(new Car("wolv", "wolv engine", "dada"));
-        storageCar.add(new Car("porsche", "weak", "vcxv"));
-        storageCar.add(new Car("lamba", "bamba", "gfgd"));
-        storageCar.add(new Car("lada", "danger", "fdsfs"));
-        storageCar.add(new Car("granda", "danger master", "shina"));
+    public CarServiceImpl(@Autowired CarDaoRepository carDaoRepository) {
+        this.carDaoRepository = carDaoRepository;
     }
 
     @Override
     public void add(Car car) {
-        storageCar.add(car);
+        carDaoRepository.getAllCar().add(car);
     }
 
     @Override
     public List<Car> getAllCar() {
-        return storageCar;
+        return carDaoRepository.getAllCar();
     }
 
     @Override
-    public List<Car> capacityCar(int count) {
-        if (count >= 5) {
-            return storageCar;
+    public List<Car> capacityCar(Integer count) {
+        if (count <= 0) {
+            count = getAllCar().size();
         }
-        return IntStream.range(0, storageCar.size())
-                .takeWhile(i -> i != count)
-                .mapToObj(i -> storageCar.get(i))
+        if (count >= 5) {
+            return carDaoRepository.getAllCar();
+        }
+        return carDaoRepository.getAllCar().stream()
+                .limit(count)
                 .collect(Collectors.toList());
     }
 }
